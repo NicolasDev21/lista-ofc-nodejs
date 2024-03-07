@@ -16,6 +16,7 @@ const inquirer = require('inquirer');
 const chalk = require('chalk');
 const fileSystem = require('fs');
 const { type } = require('os');
+const { isTypedArray } = require('util/types');
 
 
 const actionForUser = [
@@ -383,6 +384,74 @@ function showDetailsProduct() {
                 };
             });
         })
+};
+
+
+
+
+// Function | Calcular valor dos produtos:
+function calculateProducts() {
+
+    fileSystem.readdir('./product', (err, data) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const allProducts = JSON.stringify(data);
+            const allProductsObj = JSON.parse(allProducts);
+            console.log(allProductsObj);
+
+            let objCarro = allProducts[0];
+
+            console.log(` Em JSON STRINGIFY ${allProducts}`);
+            console.log(typeof allProducts);
+
+            console.log(` Em JSON OBJETO ${allProductsObj}`);
+            console.log(typeof allProductsObj);
+
+            console.table(allProductsObj);
+
+            allProductsObj.forEach((produto) => {
+                // const nome = produto.productName;
+                // const price = produto.valor;
+
+                // console.log(`Produto: ${nome} | Valor: ${price}`);
+
+                console.log(produto);
+
+                fileSystem.readFile(`./product/${produto}`, (err, data) => {
+                    if (err) {
+                        console.log(err);
+                    };
+
+                    if (data) {
+                        const produtoJSONObj = JSON.parse(data);
+
+                        console.log(`=============== ${chalk.yellow.bold(`Registro de produto:`)} ===================`);
+
+                        let nome = produtoJSONObj.productName;
+                        let price = produtoJSONObj.price;
+
+                        console.log(`Produto: ${chalk.blue.bold(`${nome}`)} | Valor: ${chalk.green.bold(`R$${price}`)}`);
+
+
+                        class ClassProducts {
+                            constructor(nome, valor) {
+                                this.nome = nome;
+                                this.valor = valor;
+                            }
+                            printProductName = () => { return this.nome };
+                            printProductValue = () => { return this.valor };
+                        }
+
+                    };
+                })
+            })
+
+
+
+        }
+    });
+
 };
 
 
